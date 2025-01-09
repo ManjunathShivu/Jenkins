@@ -1,5 +1,51 @@
-public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
+pipeline {
+    agent any
+
+    environment {
+        JAVA_HOME = tool name: 'jdk11', type: 'JDK'  // Use the appropriate JDK version (e.g., JDK 11)
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the source code from the repository
+                git 'https://github.com/your-username/hello-world-java.git'  // Replace with your Git repository URL
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Compile the Java program using Maven or Gradle
+                    // In this case, we're using Maven to compile the program
+                    sh 'mvn clean install'  // Use 'mvn' to clean and install (build) the project
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    // Run the tests (if any) to make sure the program is working fine
+                    sh 'mvn test'  // Run tests if you have them in your project
+                }
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the Hello World program (if applicable)...'
+                // You could deploy the program here (e.g., copying to a server or cloud)
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build and tests passed!'
+        }
+        failure {
+            echo 'Something went wrong. Build failed.'
+        }
     }
 }
